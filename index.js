@@ -53,13 +53,14 @@ app.use((req, res, next) => {
   next();
 });
 
-
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Something went wrong!' });
 });
-
+app.get('/',async(req,res)=>{
+  res.send('Welcome to URL Shortener API')
+})
 // Start the server
 app.listen(port, () => {
     console.log(`Server listening at ${port}`);
