@@ -1,239 +1,155 @@
-# ShortURL Backend API
+# ShortURL Frontend 🚀
 
-A powerful and scalable backend API for the ShortURL project that provides URL shortening services with advanced analytics tracking. Built with the MERN stack (MongoDB, Express.js, React.js, Node.js) and integrated with Google Maps API for precise location tracking.
+A modern, feature-rich URL shortening application built with React.js that allows users to create short URLs and track detailed analytics including click counts, IP addresses, device information, and geographic location data.
 
-## 🚀 Features
+## 🌟 Features
 
 - **URL Shortening**: Convert long URLs into short, shareable links
-- **Click Analytics**: Track every click with detailed metrics
-- **Location Tracking**: Precise geolocation data using Google Maps API
-- **Device Detection**: Identify devices, browsers, and operating systems
-- **IP Address Tracking**: Log visitor IP addresses for security and analytics
-- **Real-time Statistics**: Monitor click counts and visitor patterns
-- **User Authentication**: Secure user registration and login system
-- **RESTful API**: Clean and intuitive API endpoints
+- **Click Analytics**: Track total number of clicks on each shortened URL
+- **IP Tracking**: Capture IP addresses of visitors
+- **Device Information**: Track device type, browser, and OS details
+- **Geographic Tracking**: Get precise location data including:
+  - Latitude and longitude coordinates
+  - Country, region, and city information
+  - Powered by Google Maps API
+- **User Authentication**: Secure sign-up and sign-in functionality
+- **Visit History**: View detailed history of all clicks with timestamps
+- **Interactive Map**: Visual representation of visitor locations
 
 ## 🛠️ Tech Stack
 
-### Backend
+### Frontend
+- **React.js** - UI framework
+- **Redux Toolkit** - State management
+- **CSS3** - Styling
+- **React Router** - Navigation
+
+### Backend & Database
 - **Node.js** - Runtime environment
 - **Express.js** - Web framework
-- **MongoDB** - NoSQL database
-- **Mongoose** - MongoDB object modeling
-- **JWT** - JSON Web Tokens for authentication
-- **bcryptjs** - Password hashing
-- **Google Maps API** - Location services
+- **MongoDB** - Database
+- **Mongoose** - ODM (Object Document Mapper)
 
-### Frontend (React.js)
-- **React.js** - UI framework
-- **React Router** - Client-side routing
-- **Axios** - HTTP client
+### External Services
+- **Google Maps API** - Location tracking and mapping
+- **Geolocation services** - IP-based location detection
 
-## 📊 Analytics Data
-
-Each click on a short URL captures:
-- **Click Count**: Total number of clicks
-- **IP Address**: Visitor's IP for security
-- **Device Info**: Browser, OS, and device type
-- **Location Data**:
-  - Latitude and Longitude
-  - Country
-  - Region/State
-  - City
-  - ISP information
-
-## 🏗️ Project Structure
-
-```
-Short-Url/
-├── controllers/
-│   ├── authController.js    # User authentication logic
-│   └── url.js              # URL shortening and analytics
-├── models/
-│   ├── URL.js             # URL schema and model
-│   └── User.js            # User schema and model
-├── routes/
-│   ├── authRoutes.js      # Authentication endpoints
-│   └── url.js             # URL management endpoints
-├── public/
-│   └── location.html      # Location tracking interface
-├── index.js               # Server entry point
-└── package.json           # Dependencies and scripts
-```
-
-## 🔧 Installation & Setup
+## 🚀 Getting Started
 
 ### Prerequisites
 - Node.js (v14 or higher)
-- MongoDB (v4.4 or higher)
-- Google Maps API key
+- npm or yarn package manager
+- MongoDB instance (local or cloud)
 
-### Installation Steps
+### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/ankitbhagat2062/shorturl-backend.git
-   cd shorturl-backend
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Environment Variables**
-   Create a `.env` file in the root directory:
-   ```env
-   PORT=5000
-   MONGODB_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret_key
-   GOOGLE_MAPS_API_KEY=your_google_maps_api_key
-   ```
-
-4. **Start the server**
-   ```bash
-   # Development mode
-   npm start
-
-   # Production mode
-   npm run dev
-   ```
-
-## 📡 API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `POST /api/auth/logout` - User logout
-
-### URL Management
-- `POST /api/url/shorten` - Create short URL
-- `GET /api/url/:shortUrl` - Redirect to original URL
-- `GET /api/url/analytics/:shortUrl` - Get URL analytics
-- `GET /api/user/urls` - Get user's URLs
-- `DELETE /api/url/:shortUrl` - Delete short URL
-
-### Analytics
-- `GET /api/analytics/clicks/:shortUrl` - Get click data
-- `GET /api/analytics/locations/:shortUrl` - Get location data
-- `GET /api/analytics/devices/:shortUrl` - Get device data
-
-## 🔐 Authentication
-
-The API uses JWT (JSON Web Tokens) for secure authentication. Include the token in the Authorization header:
-```
-Authorization: Bearer <your_jwt_token>
-```
-
-## 📱 Usage Examples
-
-### Create a Short URL
-```javascript
-// POST /api/url/shorten
-{
-  "originalUrl": "https://example.com/very-long-url",
-  "customAlias": "mylink" // optional
-}
-```
-
-### Get Analytics
-```javascript
-// GET /api/url/analytics/abc123
-{
-  "originalUrl": "https://example.com",
-  "shortUrl": "abc123",
-  "totalClicks": 150,
-  "uniqueClicks": 120,
-  "locations": [...],
-  "devices": [...],
-  "createdAt": "2024-01-15T10:30:00Z"
-}
-```
-
-## 🌐 Location Tracking
-
-The system uses Google Maps API to provide precise location data:
-- **Accuracy**: Street-level precision
-- **Coverage**: Global coverage
-- **Real-time**: Instant location detection
-- **Privacy**: GDPR compliant data handling
-
-## 🚀 Deployment
-
-### Using Docker
+1. Clone the repository
 ```bash
-docker build -t shorturl-backend .
-docker run -p 5000:5000 --env-file .env shorturl-backend
+git clone [repository-url]
+cd frontend
 ```
 
-### Using PM2
+2. Install dependencies
 ```bash
-npm install -g pm2
-pm2 start index.js --name shorturl-backend
+npm install
 ```
 
-## 🧪 Testing
-
+3. Create a `.env` file in the root directory and add your environment variables:
 ```bash
-# Run tests
-npm test
-
-# Run tests with coverage
-npm run test:coverage
+REACT_APP_API_URL=http://localhost:5000
+REACT_APP_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 ```
 
-## 📈 Performance
+4. Start the development server
+```bash
+npm start
+```
 
-- **Response Time**: < 100ms for URL redirection
-- **Throughput**: 10,000+ requests per second
-- **Uptime**: 99.9% availability
-- **Scalability**: Horizontal scaling ready
+The application will open in your browser at `http://localhost:3000`.
 
-## 🔒 Security Features
+## 📱 Available Scripts
 
-- **HTTPS Only**: All API endpoints use HTTPS
-- **Rate Limiting**: Prevents abuse and DDoS attacks
-- **Input Validation**: Sanitizes all user inputs
-- **CORS Protection**: Configured for secure cross-origin requests
-- **Data Encryption**: Sensitive data encrypted
+- `npm start` - Runs the app in development mode
+- `npm test` - Launches the test runner
+- `npm run build` - Builds the app for production
+- `npm run eject` - Ejects from Create React App (one-way operation)
 
-## 📞 Connect With Me
+## 🎯 Usage
 
-Feel free to reach out and connect with me on various platforms:
+1. **Sign Up/Sign In**: Create an account or log in to access the dashboard
+2. **Create Short URL**: Enter a long URL and get a shortened version
+3. **Share Your Link**: Use the short URL anywhere
+4. **Track Analytics**: View detailed analytics for each URL including:
+   - Total clicks
+   - Visitor locations on interactive map
+   - Device and browser information
+   - Timestamps of each visit
 
-### 🐙 GitHub
-- **Profile**: [@ankitbhagat2062](https://github.com/ankitbhagat2062)
+## 📊 Analytics Dashboard
 
-### 📺 YouTube
-- **Channel**: [@ankitbhagat2064](https://youtube.com/@ankitbhagat2064)
+The application provides comprehensive analytics including:
+- **Real-time click tracking**
+- **Interactive map showing visitor locations**
+- **Device breakdown (Desktop, Mobile, Tablet)**
+- **Browser statistics**
+- **Geographic distribution of visitors**
 
-### 📘 Facebook
-- **Profile**: [Ankit Bhagat](https://facebook.com/ankit.bhagat.865533)
+## 🔧 Project Structure
 
-### 💼 LinkedIn
-- **Profile**: [Ankit Bhagat](https://linkedin.com/in/ankit-bhagat-8483a0313)
-
-### 🐦 Twitter
-- **Handle**: [@AnkitBhaga53031](https://twitter.com/AnkitBhaga53031)
-
-### 📸 Instagram
-- **Profile**: [@ankitbhagat56547](https://instagram.com/ankitbhagat56547)
+```
+src/
+├── Components/
+│   ├── Home.js           # Landing page
+│   ├── Signin.js         # User authentication
+│   ├── Signup.js         # User registration
+│   ├── AllURL.js         # URL management
+│   ├── VisitHistory.js   # Analytics dashboard
+│   ├── MyMapComponent.js # Interactive map
+│   └── Navbar.js         # Navigation component
+├── features/
+│   └── User/
+│       └── UserSlice.js  # Redux user state
+├── app/
+│   └── store.js          # Redux store configuration
+└── App.js               # Main application component
+```
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📞 Contact & Social Media
+
+Connect with me on various platforms:
+
+### 🐙 GitHub
+- Profile: [@ankitbhagat2062](https://github.com/ankitbhagat2062)
+
+### 📺 YouTube
+- Channel: [@ankitbhagat2064](https://youtube.com/@ankitbhagat2064)
+
+### 📘 Facebook
+- Profile: [ankit.bhagat.865533](https://facebook.com/ankit.bhagat.865533)
+
+### 💼 LinkedIn
+- Profile: [ankit-bhagat-8483a0313](https://linkedin.com/in/ankit-bhagat-8483a0313)
+
+### 🐦 Twitter
+- Handle: [@AnkitBhaga53031](https://twitter.com/AnkitBhaga53031)
+
+### 📸 Instagram
+- Profile: [ankitbhagat56547](https://instagram.com/ankitbhagat56547)
 
 ## 📄 License
 
-This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
+This project is open source and available under the [MIT License](LICENSE).
 
 ## 🙏 Acknowledgments
 
-- Google Maps API for location services
-- MongoDB for database support
-- Express.js community for the robust framework
-- All contributors and supporters
+- Built with Create React App
+- Location services powered by Google Maps API
+- Icons and graphics from various open-source libraries
 
 ---
 
-**Made with ❤️ by [Ankit Bhagat](https://github.com/ankitbhagat2062)**
+Made with ❤️ by Ankit Bhagat
