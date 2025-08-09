@@ -15,7 +15,7 @@ app.set('trust proxy', true);
 
 // Middleware
 app.use(cors({
-  origin: ["https://shorturl-1d0qfu18t-ankitbhagat2062s-projects.vercel.app", "http://localhost:3000"],
+  origin: ["https://shorturl-82di94nrs-ankitbhagat2062s-projects.vercel.app", "http://localhost:3000"],
   credentials: true
 }));
 app.use(express.json());
