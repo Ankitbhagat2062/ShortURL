@@ -48,7 +48,7 @@ export const createShortUrl = async (req, res) => {
             }, 1 * 60 * 1000); // 60000 ms = 1 minute
 
             return res.status(201).json({
-                shortUrl: `${window.location.origin}/api/url/${shortId}`,
+                shortUrl: `https://shorturl-82di94nrs-ankitbhagat2062s-projects.vercel.app/api/url/${shortId}`,
                 shortId,
                 originalUrl: url
             });
@@ -65,7 +65,7 @@ export const createShortUrl = async (req, res) => {
         const existingUrl = await URL.findOne({ redirectURL: url });
         if (existingUrl) {
             return res.status(200).json({
-                shortUrl: `${window.location.origin}/${existingUrl.shortId}`,
+                shortUrl: `https://shorturl-82di94nrs-ankitbhagat2062s-projects.vercel.app/${existingUrl.shortId}`,
                 shortId: existingUrl.shortId,
                 originalUrl: existingUrl.redirectURL
             });
@@ -90,7 +90,7 @@ export const createShortUrl = async (req, res) => {
         await user.save();
 
         res.status(201).json({
-            shortUrl: `${window.location.origin}/${shortId}`,
+            shortUrl: `https://shorturl-82di94nrs-ankitbhagat2062s-projects.vercel.app/${shortId}`,
             shortId,
             originalUrl: url,
             userId: userId,
@@ -203,7 +203,7 @@ export const getAllUrls = async (req, res) => {
         const urlsWithStats = urls.map(url => ({
             shortId: url.shortId,
             originalUrl: url.redirectURL,
-            shortUrl: `${window.location.origin}/${url.shortId}`,
+            shortUrl: `https://shorturl-82di94nrs-ankitbhagat2062s-projects.vercel.app/${url.shortId}`,
             totalClicks: url.visitHistory.length,
             visitHistory: url.visitHistory,
             createdAt: url.createdAt,
