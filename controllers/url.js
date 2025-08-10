@@ -24,35 +24,35 @@ export const createShortUrl = async (req, res) => {
             return res.status(400).json({ error: errors });
         }
         const user = await User.findById(userId);
-        // if (user === null) {
-        //     // Allow creation without userId but delete after 1 minute
-        //     console.log('User is :',user,'User not logged In but created short URL',userId)
-        //     const shortId = shortid.generate();
-        //     const newUrl = await URL.create({
-        //         shortId,
-        //         redirectURL: url,
-        //         userId: null,
-        //         userType: userType || 'Free', // Default to 'Free' if userType is not provide
-        //         visitHistory: []
-        //     });
-        //     await newUrl.save({ validateBeforeSave: false });
+        if (userType === 'Free' && !user) {
+            // Allow creation without userId but delete after 1 minute
+            console.log('User is :',user,'User not logged In but created short URL',userId)
+            const shortId = shortid.generate();
+            const newUrl = await URL.create({
+                shortId,
+                redirectURL: url,
+                userId: null,
+                userType: userType || 'Free', // Default to 'Free' if userType is not provide
+                visitHistory: []
+            });
+            await newUrl.save({ validateBeforeSave: false });
 
-        //     // Schedule deletion after 1 minute
-        //     setTimeout(async () => {
-        //         try {
-        //             await URL.deleteOne({ shortId });
-        //             console.log(`Deleted short URL with shortId: ${shortId} after 1 minute`);
-        //         } catch (err) {
-        //             console.error(`Error deleting short URL with shortId: ${shortId}`, err);
-        //         }
-        //     }, 1 * 60 * 1000); // 60000 ms = 1 minute
+            // Schedule deletion after 1 minute
+            setTimeout(async () => {
+                try {
+                    await URL.deleteOne({ shortId });
+                    console.log(`Deleted short URL with shortId: ${shortId} after 1 minute`);
+                } catch (err) {
+                    console.error(`Error deleting short URL with shortId: ${shortId}`, err);
+                }
+            }, 1 * 60 * 1000); // 60000 ms = 1 minute
 
-        //     return res.status(201).json({
-        //         shortUrl: `${window.location.origin}/api/url/${shortId}`,
-        //         shortId,
-        //         originalUrl: url
-        //     });
-        // }
+            return res.status(201).json({
+                shortUrl: `${window.location.origin}/api/url/${shortId}`,
+                shortId,
+                originalUrl: url
+            });
+        }
         else {
             console.log(user,'User logged In and created short URL',userId)
         }
