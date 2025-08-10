@@ -48,7 +48,7 @@ export const createShortUrl = async (req, res) => {
         //     }, 1 * 60 * 1000); // 60000 ms = 1 minute
 
         //     return res.status(201).json({
-        //         shortUrl: `http://localhost:5000/api/url/${shortId}`,
+        //         shortUrl: `${window.location.origin}/api/url/${shortId}`,
         //         shortId,
         //         originalUrl: url
         //     });
@@ -90,7 +90,7 @@ export const createShortUrl = async (req, res) => {
         await user.save();
 
         res.status(201).json({
-            shortUrl: `http://localhost:5000/${shortId}`,
+            shortUrl: `${window.location.origin}/${shortId}`,
             shortId,
             originalUrl: url,
             userId: userId,
@@ -203,7 +203,7 @@ export const getAllUrls = async (req, res) => {
         const urlsWithStats = urls.map(url => ({
             shortId: url.shortId,
             originalUrl: url.redirectURL,
-            shortUrl: `http://localhost:5000/${url.shortId}`,
+            shortUrl: `${window.location.origin}/${url.shortId}`,
             totalClicks: url.visitHistory.length,
             visitHistory: url.visitHistory,
             createdAt: url.createdAt,
