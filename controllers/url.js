@@ -26,7 +26,7 @@ export const createShortUrl = async (req, res) => {
         const user = await User.findById(userId);
         if (user === null) {
             // Allow creation without userId but delete after 1 minute
-            console.log(user,'User not logged In but created short URL',userId)
+            console.log('User is :',user,'User not logged In but created short URL',userId)
             const shortId = shortid.generate();
             const newUrl = await URL.create({
                 shortId,
