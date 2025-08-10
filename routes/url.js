@@ -29,6 +29,7 @@ router.get('/analytics/:shortId', getAnalytics);
 router.get('/admin/all/:userId', getAllUrls);
 router.delete('/deleteUrl/:shortId', deleteUrls);
 router.post('/track-visit', trackVisit);
+
 export default router;
 
 
