@@ -37,7 +37,7 @@ const urlSchema = new mongoose.Schema({
         default: function () {
             // Expire only if userType is Free; premium users URLs do not expire
             if (this.userType === 'Free') {
-                return new Date(Date.now() + 60 * 1000); // expire in 60 seconds (example)
+                return new Date(Date.now() + 30 * 1000); // expire in 60 seconds (example)
             }
             return null;
         },
