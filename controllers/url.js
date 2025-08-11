@@ -13,7 +13,7 @@ export const createShortUrl = async (req, res) => {
             return res.status(400).json({ errors: errors.array() });
         }
         const { url, userId ,userType} = req.body;
-        console.log(userId,userType)
+        console.log(`Userid is :${userId}, and userType is : ${userType}`)
         // Validate URL format using URL constructor only
         try {
             const urlObj = new global.URL(url);
