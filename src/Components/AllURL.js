@@ -13,7 +13,7 @@ const AllURL = () => {
     const [getUrls, setgetUrls] = useState(null);;
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const BASE_URL =  process.env.REACT_APP_BACKEND_URL || `https://shorturl-production-2c19.up.railway.app`;
+    const BASE_URL =  process.env.BACKEND_URL 
     useEffect(() => {
         const getAllUrls = async () => {
             if (!userId) {
@@ -39,15 +39,14 @@ const AllURL = () => {
     const handledeleteUrl = async (shortid) => {
         if (userId) {
             try {
-                const response = await axios.delete(`${BASE_URL}/api/url/deleteUrl/${shortid}`, {
+                 await axios.delete(`${BASE_URL}/api/url/deleteUrl/${shortid}`, {
                     data: { userId }, // ✅ Pass userId in `data` for DELETE body
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
-                if (response.ok) {
-                    toast('Item deleted successfully!');
-                }
+                toast('Item deleted successfully!');
+                navigate('/');
                 // Update your frontend state here (e.g., remove the item from the list)
             } catch (error) {
                 const errorMsg = error.response?.data?.error || error.message;
@@ -63,9 +62,9 @@ const AllURL = () => {
 
     return (
         <div>
-            <ToastContainer />
             {(userId) && (
                 <section className="analytics-section">
+                    <ToastContainer />
                     <h2>Get All URLs Dashboard</h2>
 
                     <div id='getAllUrl'>

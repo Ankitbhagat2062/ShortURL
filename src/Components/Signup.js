@@ -3,7 +3,7 @@ import './Signup.css';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../features/User/UserSlice';
-
+import axios from 'axios';
 const Signup = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -14,7 +14,7 @@ const Signup = () => {
   const [errors, setErrors] = React.useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const BASE_URL =  process.env.REACT_APP_BACKEND_URL || `https://shorturl-production-2c19.up.railway.app`;
+  const BASE_URL =  process.env.BACKEND_URL 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -69,24 +69,16 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${BASE_URL}/api/auth/signup`, {
-        method: 'POST',
+       await axios.post(`${BASE_URL}/api/auth/signin`, formData, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-      if (response.ok) {
         navigate('/signin')
         dispatch(login())
         setFormData({ username: '', email: '', password: '', confirmPassword: '' });
         setSuccess(true)
-      } else {
-        setErrors({ general: data.message });
-        console.error('Signup failed:', data.message);
-      }
     } catch (error) {
       if (error.response) {
         const contentType = error.response.headers['content-type'];

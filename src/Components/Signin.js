@@ -4,7 +4,7 @@ import { login, setUser } from '../features/User/UserSlice';
 import { useNavigate } from 'react-router-dom';
 import './Signin.css';
 import { ToastContainer, toast } from 'react-toastify';
-
+import axios from 'axios';
 const Signin = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -13,7 +13,7 @@ const Signin = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const BASE_URL = process.env.REACT_APP_BACKEND_URL || `https://shorturl-production-2c19.up.railway.app`;
+  const BASE_URL = process.env.BACKEND_URL 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -55,39 +55,32 @@ const Signin = () => {
     if (!validateForm()) return;
     setLoading(true);
     try {
-      const response = await fetch(`${BASE_URL}/api/auth/signin`, {
-        method: 'POST',
+      const response = await axios.post(`${BASE_URL}/api/auth/signin`, formData, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
-      if (response.ok) {
-        navigate('/')
-        localStorage.setItem('email', formData.email)
-        localStorage.setItem('userId', result.Id)
-        dispatch(setUser({ userId: result.Id, email: formData.email }));
-        dispatch(login())
-        setSuccess(true)
-        toast('Login Successfull', result.email)
-      } else {
-        setErrors({ general: result.message });
-        console.error('Signup failed:', result.message);
-      }
+      const result = await response.data;
+      navigate('/')
+      localStorage.setItem('email', formData.email)
+      localStorage.setItem('userId', result.Id)
+      dispatch(setUser({ userId: result.Id, email: formData.email }));
+      dispatch(login())
+      setSuccess(true)
+      toast('Login Successfull', result.email)
     } catch (error) {
       if (error.response) {
         const contentType = error.response.headers['content-type'];
         if (contentType && contentType.includes('application/json')) {
-          setErrors({ general: error.response.data.message ?? JSON.stringify(error.response.data) });
+          setErrors({ general: error.response.data.msg ?? JSON.stringify(error.response.data) });
         } else {
           setErrors({ general: error.response.statusText || String(error.response.data) });
         }
       } else if (error.request) {
         setErrors({ general: 'No response received from server' });
       } else {
-        setErrors({ general: error.message });
+        setErrors({ general: error.msg });
       }
     } finally {
       setLoading(false);

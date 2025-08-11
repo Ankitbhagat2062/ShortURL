@@ -6,7 +6,6 @@ import './Navbar.css'
 const Navbar = () => {
   const isLoggedIn = useSelector((state) => state.user.islogedin)
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.userId);
   const [open, setOpen] = useState(false);
   const handleLogout = () => {
     localStorage.clear();
@@ -35,9 +34,6 @@ const Navbar = () => {
         }}>
           ShortURL
         </Link>
-        <span className="welcome-msg">
-          Welcome, {user?.name || 'User'}
-        </span>
       </div>
 
       <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>

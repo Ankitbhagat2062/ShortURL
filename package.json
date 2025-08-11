@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "shorturl",
   "version": "0.1.0",
   "private": true,
   "proxy": "https://shorturl-production-2c19.up.railway.app",

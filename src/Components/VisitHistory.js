@@ -5,7 +5,7 @@ import MapWithAdvancedMarker from './MyMapComponent';
 
 const VisitHistory = () => {
   const visitHistory = useSelector((state) => state.user.visitHistory);
-  const apiKey = process.env.REACT_APP_GOOGLE_MAP_KEY;
+  // const apiKey = process.env.GOOGLE_MAP_KEY;
   if (!visitHistory || visitHistory.length === 0) {
     return (
       <div className="visit-history">
@@ -30,7 +30,7 @@ const VisitHistory = () => {
             {visit.location?.lat && visit.location?.lon && (
               <div className='Google-Map'>
                 <h3 style={{margin:'0'}}>User Location</h3>
-                <MapWithAdvancedMarker lat={visit.location.lat} lng={visit.location.lon} apiKey={apiKey} />
+                <MapWithAdvancedMarker lat={visit.location.lat} lng={visit.location.lon} apiKey="AIzaSyDvT1ecYHEiLMSPTgNtl5uwy8mQqWj_-mc" />
               </div>
             )}
 
