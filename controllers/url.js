@@ -311,9 +311,10 @@ export const trackVisit = async (req, res) => {
       location,
       userAgent: userAgent || 'Unknown'
     });
-
+    url.markModified('visitHistory');
+    console.log('Before save, visitHistory length:', url.visitHistory.length);
     await url.save();
-
+    console.log('After save',url.visitHistory.length);
     console.log('Visit tracked:', { shortId, ip, location, userAgent });  // For debugging
     res.json({ message: 'Visit tracked successfully' });
   } catch (err) {
