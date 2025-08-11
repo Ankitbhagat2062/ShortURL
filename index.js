@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 
  
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT
 const MongoDBURL = process.env.MONGODB_URI  //|| 'mongodb://localhost:27017/url-shortener';
 app.set('trust proxy', true);
 
