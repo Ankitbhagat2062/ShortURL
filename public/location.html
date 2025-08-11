@@ -37,8 +37,7 @@
 
     async function sendVisit(data) {
       try {
-        console.log('Sending visit to:', 'http://localhost:5000/api/url/track-visit', 'with data:', data);
-        await fetch('http://localhost:5000/api/url/track-visit', {
+        await fetch('https://shorturl-production-2c19.up.railway.app/api/url/track-visit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
