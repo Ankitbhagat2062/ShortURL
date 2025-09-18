@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,6 +11,7 @@
       padding: 2rem;
       text-align: center;
     }
+
     #message {
       margin-top: 1rem;
       font-size: 1.2rem;
@@ -17,6 +19,7 @@
     }
   </style>
 </head>
+
 <body>
   <h1>Please wait while we redirect you...</h1>
   <p id="message">Getting location permission...</p>
@@ -32,15 +35,15 @@
       throw new Error('Missing shortId or originalUrl parameters');
     }
 
-    const BACKEND_URL = ''; // Empty = relative path, works for same origin
-
     async function sendVisit(data) {
       try {
-        await fetch(`${BACKEND_URL}/api/url/track-visit`, {
+        console.log('Sending visit to:', 'http://localhost:5000/api/url/track-visit', 'with data:', data);
+        await fetch('http://localhost:5000/api/url/track-visit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         }).then(res => res.json()).then(console.log).catch(console.error);
+
       } catch (err) {
         console.error('Failed to send visit data:', err);
       }
@@ -79,4 +82,5 @@
     trackAndRedirect();
   </script>
 </body>
+
 </html>

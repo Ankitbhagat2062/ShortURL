@@ -2,13 +2,105 @@ import URL from '../models/URL.js';
 import User from '../models/User.js';
 import shortid from 'shortid';
 import { validationResult } from 'express-validator';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
+const accessKey = process.env.ipstack_ACCESSKEY
+// Create a short URL
+export const createShortUrl = async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        const { url, userId ,userType} = req.body;
+        console.log(`Userid is :${userId}, and userType is : ${userType}`)
+        // Validate URL format using URL constructor only
+        try {
+            const urlObj = new global.URL(url);
+            if (!['http:', 'https:'].includes(urlObj.protocol)) {
+                return res.status(400).json({ error: 'URL must use http or https protocol' });
+            }
+        } catch (errors) {
+            return res.status(400).json({ error: errors });
+        }
+        const user = await User.findById(userId);
+        if (userType === 'Free' && !user) {
+            // Allow creation without userId but delete after 1 minute
+            console.log('User is :',user,'User not logged In but created short URL',userId)
+            const shortId = shortid.generate();
+            const newUrl = await URL.create({
+                shortId,
+                redirectURL: url,
+                userId: null,
+                userType: userType || 'Free', // Default to 'Free' if userType is not provide
+                visitHistory: []
+            });
+            await newUrl.save({ validateBeforeSave: false });
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
-const accessKey = process.env.ipstack_ACCESSKEY;
+            // Schedule deletion after 1 minute
+            setTimeout(async () => {
+                try {
+                    await URL.deleteOne({ shortId });
+                    console.log(`Deleted short URL with shortId: ${shortId} after 1 minute`);
+                } catch (err) {
+                    console.error(`Error deleting short URL with shortId: ${shortId}`, err);
+                }
+            }, 1 * 60 * 1000); // 60000 ms = 1 minute
 
+            return res.status(201).json({
+                shortUrl: `https://shorturl-production-2c19.up.railway.app/api/url/${shortId}`,
+                shortId,
+                originalUrl: url
+            });
+        }
+        else {
+            console.log(user,'User logged In and created short URL',userId)
+        }
+
+        if (!url) {
+            return res.status(400).json({ error: 'URL is required' });
+        }
+
+        // Check if URL already exists
+        const existingUrl = await URL.findOne({ redirectURL: url });
+        if (existingUrl) {
+            return res.status(200).json({
+                shortUrl: `https://shorturl-production-2c19.up.railway.app/${existingUrl.shortId}`,
+                shortId: existingUrl.shortId,
+                originalUrl: existingUrl.redirectURL
+            });
+        }
+
+        // Create new short URL
+        const shortId = shortid.generate();
+        const newUrl = new URL({
+            shortId: shortId,
+            redirectURL: url,
+            userId: userId,
+            userType: userType // or 'Premium'
+        });
+        await newUrl.save();
+
+
+        await newUrl.save({ validateBeforeSave: false });
+
+        // Push the shortId to the user's URLs array
+        user.URL = user.URL;
+        user.URL.push(newUrl._id);
+        await user.save();
+
+        res.status(201).json({
+            shortUrl: `https://shorturl-production-2c19.up.railway.app/${shortId}`,
+            shortId,
+            originalUrl: url,
+            userId: userId,
+            userType: 'Premium'
+        });
+    } catch (error) {
+        console.error('Error creating short URL:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 
 export const redirectToUrl = async (req, res) => {
     try {
@@ -93,84 +185,9 @@ export const getAnalytics = async (req, res) => {
     }
 };
 
-// Create a short URL
-export const createShortUrl = async (req, res) => {
-    try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
+// Get all URLs for a specific user
+import mongoose from 'mongoose';
 
-        const { url, userId, userType } = req.body;
-
-        // Validate URL format
-        try {
-            const urlObj = new global.URL(url);
-            if (!['http:', 'https:'].includes(urlObj.protocol)) {
-                return res.status(400).json({ error: 'URL must use http or https protocol' });
-            }
-        } catch (err) {
-            return res.status(400).json({ error: 'Invalid URL' });
-        }
-
-        let user = null;
-        if (userId) {
-            user = await User.findById(userId);
-        }
-
-        // Check if URL already exists
-        const existingUrl = await URL.findOne({ redirectURL: url });
-        if (existingUrl) {
-            return res.status(200).json({
-                shortId: existingUrl.shortId,
-                originalUrl: existingUrl.redirectURL,
-                shortUrl: `${BACKEND_URL}/${existingUrl.shortId}`
-            });
-        }
-
-        // Create new short URL
-        const shortId = shortid.generate();
-        const newUrl = new URL({
-            shortId,
-            redirectURL: url,
-            userId: user ? user._id : null,
-            userType: userType || 'Free',
-            visitHistory: []
-        });
-        await newUrl.save();
-
-        // If user exists, add URL to their list
-        if (user) {
-            user.URL = user.URL || [];
-            user.URL.push(newUrl._id);
-            await user.save();
-        }
-
-        // If Free user without login, auto-delete after 1 min
-        if (userType === 'Free' && !user) {
-            setTimeout(async () => {
-                try {
-                    await URL.deleteOne({ shortId });
-                    console.log(`Deleted short URL with shortId: ${shortId} after 1 minute`);
-                } catch (err) {
-                    console.error(`Error deleting short URL with shortId: ${shortId}`, err);
-                }
-            }, 60 * 1000);
-        }
-
-        return res.status(201).json({
-            shortId,
-            originalUrl: url,
-            shortUrl: `${BACKEND_URL}/${shortId}`
-        });
-
-    } catch (error) {
-        console.error('Error creating short URL:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
-
-// Get all URLs for a user
 export const getAllUrls = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -179,26 +196,26 @@ export const getAllUrls = async (req, res) => {
             return res.status(400).json({ error: 'User ID is required' });
         }
 
-        const urls = await URL.find({ userId }).sort({ createdAt: -1 });
+        const urls = await URL.find({
+            userId: { $in: [new mongoose.Types.ObjectId(userId)] }
+        }).sort({ createdAt: -1 });
 
         const urlsWithStats = urls.map(url => ({
             shortId: url.shortId,
             originalUrl: url.redirectURL,
-            shortUrl: `${BACKEND_URL}/${url.shortId}`,
+            shortUrl: `https://shorturl-production-2c19.up.railway.app/${url.shortId}`,
             totalClicks: url.visitHistory.length,
             visitHistory: url.visitHistory,
             createdAt: url.createdAt,
-            userId
+            userId: userId
         }));
 
         res.json(urlsWithStats);
-
     } catch (error) {
         console.error('Error getting user URLs:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
-
 export const deleteUrls = async (req, res) => {
     try {
         const { userId } = req.body; // Make sure this is in the request body
