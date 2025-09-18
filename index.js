@@ -20,28 +20,23 @@ console.log("MONGODB_URI:", process.env.MONGODB_URI ? "Loaded" : "Missing");
 // ✅ Single CORS setup
 const allowedOrigins = [
   process.env.FRONTEND_URL,
-  "http://localhost:3000"
-].filter(Boolean);
+  "http://localhost:3000",
+].filter(Boolean); // remove undefined
 
-app.use(cors({
-  origin: function(origin, callback) {
-    // allow requests with no origin like mobile apps or curl
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS: " + origin));
-    }
-  },
-  credentials: true,
-  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
-  allowedHeaders: ["Content-Type","Authorization"]
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS: " + origin));
+      }
+    },
+    credentials: true,
+  })
+);
+app.options("*", cors());
 
-// Must add this to handle preflight OPTIONS requests
-app.options("*", cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
 
 // Body parsers
 app.use(express.json());
@@ -62,22 +57,16 @@ const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-// Only match alphanumeric shortIds (e.g., 6-10 chars)
-app.get("/:shortId([a-zA-Z0-9_-]{6,10})", async (req, res) => {
-  try {
-    const { shortId } = req.params;
-    const url = await URL.findOne({ shortId });
-    if (!url) return res.status(404).send("Short URL not found");
+// Root route
+app.get('/:shortId', async (req, res) => {
+  const { shortId } = req.params;
+  const url = await URL.findOne({ shortId });
+  if (!url) return res.status(404).send('Short URL not found');
 
-    res.redirect(
-      `/location.html?shortId=${encodeURIComponent(shortId)}&originalUrl=${encodeURIComponent(url.redirectURL)}`
-    );
-  } catch (err) {
-    console.error("Redirect error:", err);
-    res.status(500).send("Internal server error");
-  }
+  const locationPagePath = path.join(__dirname, 'public', 'location.html');
+  // add query params to redirect location.html URL
+  res.redirect(`/location.html?shortId=${encodeURIComponent(shortId)}&originalUrl=${encodeURIComponent(url.redirectURL)}`);
 });
-
 
 
 app.use((req, res, next) => {
