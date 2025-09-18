@@ -13,6 +13,7 @@ const MongoDBURL = process.env.MONGODB_URI;
 const FRONTEND_URL = process.env.FRONTEND_URL;
 
 app.set("trust proxy", true);
+console.log(FRONTEND_URL)
 
 // ✅ Single CORS setup
 app.use(
