@@ -13,19 +13,30 @@ const MongoDBURL = process.env.MONGODB_URI;
 const FRONTEND_URL = process.env.FRONTEND_URL;
 
 app.set("trust proxy", true);
-console.log(FRONTEND_URL)
+console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+console.log("MONGODB_URI:", process.env.MONGODB_URI ? "Loaded" : "Missing");
+
 
 // ✅ Single CORS setup
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:3000",
+].filter(Boolean); // remove undefined
+
 app.use(
   cors({
-    origin: [FRONTEND_URL, "http://localhost:3000"],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS: " + origin));
+      }
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
 app.options("*", cors());
+
 
 // Body parsers
 app.use(express.json());
