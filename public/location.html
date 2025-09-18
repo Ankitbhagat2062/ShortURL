@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,7 +10,6 @@
       padding: 2rem;
       text-align: center;
     }
-
     #message {
       margin-top: 1rem;
       font-size: 1.2rem;
@@ -19,67 +17,85 @@
     }
   </style>
 </head>
-
 <body>
   <h1>Please wait while we redirect you...</h1>
   <p id="message">Getting location permission...</p>
 
   <script>
-    // Extract shortId and originalUrl from URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
-    const shortId = urlParams.get('shortId');
-    const originalUrl = urlParams.get('originalUrl');
+    const shortId = urlParams.get("shortId");
 
-    if (!shortId || !originalUrl) {
-      document.getElementById('message').textContent = 'Invalid request. Missing parameters.';
-      throw new Error('Missing shortId or originalUrl parameters');
+    if (!shortId) {
+      document.getElementById("message").textContent = "Invalid request. Missing shortId.";
+      throw new Error("Missing shortId parameter");
     }
 
     async function sendVisit(data) {
       try {
-        await fetch('/api/url/track-visit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        }).then(res => res.json()).then(console.log).catch(console.error);
-
+        const res = await fetch("/api/url/track-visit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        return await res.json();
       } catch (err) {
-        console.error('Failed to send visit data:', err);
+        console.error("Failed to send visit data:", err);
       }
     }
 
-    async function redirectUser() {
+    async function redirectUser(originalUrl) {
+      if (!originalUrl) {
+        document.getElementById("message").textContent = "Invalid redirect target.";
+        return;
+      }
       window.location.href = originalUrl;
     }
 
     async function trackAndRedirect() {
-      const userAgent = navigator.userAgent || 'Unknown';
+      const userAgent = navigator.userAgent || "Unknown";
 
-      if (!navigator.geolocation) {
-        document.getElementById('message').textContent = 'Geolocation not supported. Redirecting...';
-        await sendVisit({ shortId, geoPosition: null, userAgent });
-        redirectUser();
+      // 1. Ask backend for originalUrl
+      let originalUrl;
+      try {
+        const res = await fetch(`/api/url/get/${shortId}`);
+        const data = await res.json();
+        originalUrl = data?.originalUrl;
+      } catch (err) {
+        document.getElementById("message").textContent = "Error fetching original URL.";
+        console.error(err);
         return;
       }
 
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const geoPosition = {
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        };
-        document.getElementById('message').textContent = 'Location acquired. Redirecting...';
-        await sendVisit({ shortId, geoPosition, userAgent });
-        redirectUser();
-      }, async (error) => {
-        console.warn('Geolocation error:', error.message);
-        document.getElementById('message').textContent = 'Permission denied or error. Redirecting...';
+      // 2. Get geolocation if available
+      if (!navigator.geolocation) {
+        document.getElementById("message").textContent = "Geolocation not supported. Redirecting...";
         await sendVisit({ shortId, geoPosition: null, userAgent });
-        redirectUser();
-      }, { timeout: 10000 });
+        redirectUser(originalUrl);
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const geoPosition = {
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          };
+          document.getElementById("message").textContent = "Location acquired. Redirecting...";
+          await sendVisit({ shortId, geoPosition, userAgent });
+          redirectUser(originalUrl);
+        },
+        async (error) => {
+          console.warn("Geolocation error:", error.message);
+          document.getElementById("message").textContent =
+            "Permission denied or error. Redirecting...";
+          await sendVisit({ shortId, geoPosition: null, userAgent });
+          redirectUser(originalUrl);
+        },
+        { timeout: 10000 }
+      );
     }
 
     trackAndRedirect();
   </script>
 </body>
-
 </html>
