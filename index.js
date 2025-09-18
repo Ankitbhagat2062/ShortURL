@@ -11,11 +11,12 @@ import { fileURLToPath } from 'url';
 const app = express();
 const port = process.env.PORT
 const MongoDBURL = process.env.MONGODB_URI  //|| 'mongodb://localhost:27017/url-shortener';
+const FRONTEND_URL= process.env.FRONTEND_URL
 app.set('trust proxy', true);
 
 // Middleware
 app.use(cors({
-  origin: ["https://shorturl-iqjrk1zp7-ankitbhagat2062s-projects.vercel.app", "http://localhost:3000"],
+  origin: [FRONTEND_URL, "http://localhost:3000"],
   credentials: true
 }));
 app.use(express.json());
