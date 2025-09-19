@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 
 const Home = () => {
-  const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL ;
   const [url, setUrl] = useState('');
   const [shortUrl, setShortUrl] = useState('');
   const [shortId, setShortId] = useState('');
@@ -12,6 +12,8 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const userId = useSelector((state) => state.user.userId);
+console.log("BASE_URL:", BASE_URL);
+
   const createShortUrl = async () => {
     if (!url) {
       setError('Please enter a URL');
@@ -45,17 +47,18 @@ const Home = () => {
       setUrl('');
       toast.success('Successfully Created Short URL', response.data);
     } catch (error) {
+      toast("Please Login to create Short URl")
       if (error.response) {
         const contentType = error.response.headers['content-type'];
         if (contentType && contentType.includes('application/json')) {
-          setError({ general: error.response.data.msg ?? JSON.stringify(error.response.data) });
+          setError("Error During creating ShortUrl");
         } else {
-          setError({ general: error.response.statusText || String(error.response.data) });
+          setError({ general: "Response Error for creating ShortUrl"});
         }
       } else if (error.request) {
         setError({ general: 'No response received from server' });
       } else {
-        setError({ general: error.msg });
+        setError({ general: "Error while Creating ShortURL" });
       }
     } finally {
       setLoading(false);
@@ -74,18 +77,7 @@ const Home = () => {
         toast.success('Successfully Created Short URL', response.data);
         console.log('Successfully Created Short URL', response.data);
       } catch (error) {
-        if (error.response) {
-          const contentType = error.response.headers['content-type'];
-          if (contentType && contentType.includes('application/json')) {
-            setError({ general: error.response.data.msg ?? JSON.stringify(error.response.data) });
-          } else {
-            setError({ general: error.response.statusText || String(error.response.data) });
-          }
-        } else if (error.request) {
-          setError({ general: 'No response received from server' });
-        } else {
-          setError({ general: error.msg });
-        }
+        setError("Error while creating shortURl")
       } finally {
         setLoading(false); // Always set loading to false after the API call finishes
       }
@@ -105,7 +97,7 @@ const Home = () => {
       const response = await axios.get(`${BASE_URL}/api/url/analytics/${shortId}`);
       setAnalytics(response.data);
     } catch (error) {
-      setError(error.response?.data?.error || 'Error fetching analytics');
+      setError( 'Error fetching analytics');
     } finally {
       setLoading(false);
     }

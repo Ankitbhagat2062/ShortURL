@@ -13,7 +13,7 @@ const AllURL = () => {
     const [getUrls, setgetUrls] = useState(null);;
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+    const BASE_URL = process.env.REACT_APP_BACKEND_URL ;
  
     useEffect(() => {
         const getAllUrls = async () => {
@@ -29,7 +29,7 @@ const AllURL = () => {
                 const response = await axios.get(`${BASE_URL}/api/url/admin/all/${userId}`);
                 setgetUrls(response.data);
             } catch (error) {
-                setError(error.response?.data?.error || 'Error fetching analytics');
+                setError('Error fetching analytics');
             } finally {
                 setLoading(false);
             }
@@ -51,7 +51,7 @@ const AllURL = () => {
                 // Update your frontend state here (e.g., remove the item from the list)
             } catch (error) {
                 const errorMsg = error.response?.data?.error || error.message;
-                setError(`Error deleting item: ${errorMsg}`);
+                setError(`Error deleting item: `);
             }
         }
     };

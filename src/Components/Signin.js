@@ -13,7 +13,7 @@ const Signin = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL ;
  
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -71,17 +71,17 @@ const Signin = () => {
       setSuccess(true)
       toast('Login Successfull', result.email)
     } catch (error) {
-      if (error.response) {
+       if (error.response) {
         const contentType = error.response.headers['content-type'];
         if (contentType && contentType.includes('application/json')) {
-          setErrors({ general: error.response.data.msg ?? JSON.stringify(error.response.data) });
+          setErrors("Error During Sign In");
         } else {
-          setErrors({ general: error.response.statusText || String(error.response.data) });
+          setErrors({ general: "Response Error for Sign In"});
         }
       } else if (error.request) {
         setErrors({ general: 'No response received from server' });
       } else {
-        setErrors({ general: error.msg });
+        setErrors({ general: "Error while Login" });
       }
     } finally {
       setLoading(false);

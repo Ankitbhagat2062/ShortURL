@@ -11,7 +11,7 @@ const Signup = () => {
     password: '',
     confirmPassword: ''
   });
-  const BASE_URL =  process.env.NEXT_PUBLIC_BACKEND_URL 
+  const BASE_URL =  process.env.REACT_APP_BACKEND_URL ;
   const [errors, setErrors] = React.useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -80,17 +80,17 @@ const Signup = () => {
         setFormData({ username: '', email: '', password: '', confirmPassword: '' });
         setSuccess(true)
     } catch (error) {
-      if (error.response) {
+             if (error.response) {
         const contentType = error.response.headers['content-type'];
         if (contentType && contentType.includes('application/json')) {
-          setErrors({ general: error.response.data.message ?? JSON.stringify(error.response.data) });
+          setErrors("Error During Sign Up");
         } else {
-          setErrors({ general: error.response.statusText || String(error.response.data) });
+          setErrors({ general: "Response Error for Sign Up"});
         }
       } else if (error.request) {
         setErrors({ general: 'No response received from server' });
       } else {
-        setErrors({ general: error.message });
+        setErrors({ general: "Error while Sign Up" });
       }
     } finally {
       setLoading(false);
