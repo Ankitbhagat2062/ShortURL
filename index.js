@@ -14,7 +14,7 @@ const MongoDBURL = process.env.MONGODB_URI;
 const FRONTEND_URL = process.env.FRONTEND_URL
 
 app.set("trust proxy", true);
-console.log("FRONTEND_URL:", );
+console.log("FRONTEND_URL:", FRONTEND_URL ? 'URL Loaded' : "Missing");
 console.log("MONGODB_URI:", MongoDBURL ? "Loaded" : "Missing");
 
 app.use(cors({
