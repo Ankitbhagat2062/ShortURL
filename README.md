@@ -45,7 +45,7 @@ A modern, feature-rich URL shortening application built with React.js that allow
 
 1. Clone the repository
 ```bash
-git clone [repository-url]
+git clone https://github.com/Ankitbhagat2062/ShortURL.git
 cd frontend
 ```
 
