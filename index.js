@@ -21,8 +21,6 @@ app.use(cors({
   origin: [FRONTEND_URL , 'http://localhost:3000'],
   credentials: true
 }));
-app.options("*", cors());
-
 
 // Body parsers
 app.use(express.json());
