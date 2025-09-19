@@ -37,8 +37,8 @@
 
     async function sendVisit(data) {
       try {
-        console.log('Sending visit to:', 'http://localhost:5000/api/url/track-visit', 'with data:', data);
-        await fetch('http://localhost:5000/api/url/track-visit', {
+        console.log('Sending visit to:', 'https://shorturl-hleu.onrender.com/api/url/track-visit', 'with data:', data);
+        await fetch('/api/url/track-visit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)

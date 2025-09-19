@@ -5,6 +5,7 @@ import { validationResult } from 'express-validator';
 import dotenv from 'dotenv';
 dotenv.config();
 const accessKey = process.env.ipstack_ACCESSKEY
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 // Create a short URL
 export const createShortUrl = async (req, res) => {
     try {
@@ -48,7 +49,7 @@ export const createShortUrl = async (req, res) => {
             }, 1 * 60 * 1000); // 60000 ms = 1 minute
 
             return res.status(201).json({
-                shortUrl: `https://shorturl-production-2c19.up.railway.app/api/url/${shortId}`,
+                shortUrl: `${BACKEND_URL}/api/url/${shortId}`,
                 shortId,
                 originalUrl: url
             });
@@ -65,7 +66,7 @@ export const createShortUrl = async (req, res) => {
         const existingUrl = await URL.findOne({ redirectURL: url });
         if (existingUrl) {
             return res.status(200).json({
-                shortUrl: `https://shorturl-production-2c19.up.railway.app/${existingUrl.shortId}`,
+                shortUrl: `${BACKEND_URL}/${existingUrl.shortId}`,
                 shortId: existingUrl.shortId,
                 originalUrl: existingUrl.redirectURL
             });
@@ -90,7 +91,7 @@ export const createShortUrl = async (req, res) => {
         await user.save();
 
         res.status(201).json({
-            shortUrl: `https://shorturl-production-2c19.up.railway.app/${shortId}`,
+            shortUrl: `${BACKEND_URL}/${shortId}`,
             shortId,
             originalUrl: url,
             userId: userId,
@@ -203,7 +204,7 @@ export const getAllUrls = async (req, res) => {
         const urlsWithStats = urls.map(url => ({
             shortId: url.shortId,
             originalUrl: url.redirectURL,
-            shortUrl: `https://shorturl-production-2c19.up.railway.app/${url.shortId}`,
+            shortUrl: `${BACKEND_URL}/${url.shortId}`,
             totalClicks: url.visitHistory.length,
             visitHistory: url.visitHistory,
             createdAt: url.createdAt,
