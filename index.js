@@ -16,25 +16,10 @@ app.set("trust proxy", true);
 console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
 console.log("MONGODB_URI:", process.env.MONGODB_URI ? "Loaded" : "Missing");
 
-
-// ✅ Single CORS setup
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  "http://localhost:3000",
-].filter(Boolean); // remove undefined
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS: " + origin));
-      }
-    },
-    credentials: true,
-  }) 
-);
+app.use(cors({
+  origin: [FRONTEND_URL , 'http://localhost:3000'],
+  credentials: true
+}));
 app.options("*", cors());
 
 
