@@ -11,10 +11,10 @@ const Signup = () => {
     password: '',
     confirmPassword: ''
   });
+  const BASE_URL =  process.env.NEXT_PUBLIC_BACKEND_URL 
   const [errors, setErrors] = React.useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const BASE_URL =  process.env.BACKEND_URL 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -69,7 +69,7 @@ const Signup = () => {
     setLoading(true);
 
     try {
-       await axios.post(`${BASE_URL}/api/auth/signin`, formData, {
+       await axios.post(`${BASE_URL}/api/auth/signup`, formData, {
         headers: {
           'Content-Type': 'application/json',
         },

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 
 const Home = () => {
-  const BASE_URL = process.env.BACKEND_URL
+  const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
   const [url, setUrl] = useState('');
   const [shortUrl, setShortUrl] = useState('');
   const [shortId, setShortId] = useState('');

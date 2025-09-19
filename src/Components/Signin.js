@@ -13,7 +13,8 @@ const Signin = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const BASE_URL = process.env.BACKEND_URL 
+  const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+ 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

@@ -13,7 +13,8 @@ const AllURL = () => {
     const [getUrls, setgetUrls] = useState(null);;
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const BASE_URL =  process.env.BACKEND_URL 
+    const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+ 
     useEffect(() => {
         const getAllUrls = async () => {
             if (!userId) {
