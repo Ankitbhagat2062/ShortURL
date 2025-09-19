@@ -11,10 +11,11 @@ import { fileURLToPath } from 'url';
 const app = express();
 const port = process.env.PORT || 5000;
 const MongoDBURL = process.env.MONGODB_URI;
+const FRONTEND_URL = process.env.FRONTEND_URL
 
 app.set("trust proxy", true);
-console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
-console.log("MONGODB_URI:", process.env.MONGODB_URI ? "Loaded" : "Missing");
+console.log("FRONTEND_URL:", );
+console.log("MONGODB_URI:", MongoDBURL ? "Loaded" : "Missing");
 
 app.use(cors({
   origin: [FRONTEND_URL , 'http://localhost:3000'],
